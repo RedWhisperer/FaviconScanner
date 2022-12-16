@@ -25,21 +25,25 @@ def compare_hash(file, target_url):
         pass
 
 # Sending HTTP/HTTPS requests for getting favicon hash
+def get_favi_hash(target):
+    try:
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        file_hash = requests.get(target, verify=False, timeout=4).content
+        if file_hash:
+            compare_hash(file_hash, target)
+        else:
+            pass
+    except:
+        print('\n[X] Could not send requests to target:', target)
+
+# Extracting each IP/Domain from provided list
 def get_favicon(list_file):
     try:
         with open(list_file, 'r') as target_list:
             for line in target_list:
                 target = line.strip()
                 target_url = protocol + "://" + target + "/favicon.ico"
-                try:
-                    requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
-                    file_hash = requests.get(target_url, verify=False).content
-                    if file_hash:
-                        compare_hash(file_hash, target_url)
-                    else:
-                        pass
-                except:
-                    print('\n[X] Could not send requests to target:', line)
+                get_favi_hash(target_url)
     except:
         print('\n[X] Could not open mentioned file')
         print('[!] Please verify the list file location and try again')
