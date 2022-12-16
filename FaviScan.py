@@ -7,12 +7,12 @@ from urllib3.exceptions import InsecureRequestWarning
 parser = optparse.OptionParser()
 parser.add_option('-l', '--list', dest="list_file", help='File containing the list of target IPs/Domains')
 parser.add_option('-c', '--compare', dest='origin_hash', help='Origin hash to compare with')
-parser.add_option('-m', '--method', dest='method', help='Send http or https requests')
+parser.add_option('-p', '--protocol', dest='protocol', help='Send http or https requests')
 (options, arguments) = parser.parse_args()
 
 list_file = options.list_file
 origin_hash = options.origin_hash
-method = options.method
+protocol = options.protocol
 
 matching_hosts = []
 
@@ -30,7 +30,7 @@ def get_favicon(list_file):
         with open(list_file, 'r') as target_list:
             for line in target_list:
                 target = line.strip()
-                target_url = method + "://" + target + "/favicon.ico"
+                target_url = protocol + "://" + target + "/favicon.ico"
                 try:
                     requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
                     file_hash = requests.get(target_url, verify=False).content
